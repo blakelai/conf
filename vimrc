@@ -1,3 +1,7 @@
+" For compatibility with fish
+if $SHELL =~ 'bin/fish'
+    set shell=/bin/sh
+endif
 " Vundle
 set nocompatible               " be iMproved
 filetype off                   " required!
