@@ -1,3 +1,12 @@
+"
+" Setup vim
+"
+" Author:
+"   Blake Lai <blackxwhite@gmail.com>
+" Reference:
+"   vgod's vimrc : https://github.com/vgod/vimrc
+"   dotvim : https://github.com/dotphiles/dotvim
+
 " For compatibility with fish
 if $SHELL =~ 'bin/fish'
     set shell=/bin/sh
@@ -8,67 +17,95 @@ filetype off                   " required!
 
 " http://www.erikzaadi.com/2012/03/19/auto-installing-vundle-from-your-vimrc/
 " Setting up Vundle - the vim plugin bundler
-let iCanHazVundle=1
-let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
+let VundleInstalled=0
+let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
 if !filereadable(vundle_readme)
     echo "Installing Vundle.."
     echo ""
     silent !mkdir -p ~/.vim/bundle
-    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-    let iCanHazVundle=0
+    silent !git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+    let VundleInstalled=1
 endif
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-Bundle 'gmarik/vundle'
-Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'tomtom/tlib_vim'
-"Bundle 'mileszs/ack.vim'
-" My Bundles
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/vundle'
+"Plugin 'MarcWeber/vim-addon-mw-utils'
+"Plugin 'tomtom/tlib_vim'
+" My Plugins
 " General
-Bundle 'bling/vim-airline'
-Bundle 'chriskempson/vim-tomorrow-theme'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'scrooloose/nerdtree'
-Bundle 'tpope/vim-surround'
-Bundle 'Townk/vim-autoclose'
-Bundle 'kien/ctrlp.vim'
-Bundle 'matchit.zip'
-Bundle 'YankRing.vim'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'myusuf3/numbers.vim'
-Bundle 'airblade/vim-gitgutter'
+"Plugin 'Shougo/unite.vim'
+Plugin 'scrooloose/nerdtree'
+Plugin 'chriskempson/vim-tomorrow-theme'
+Plugin 'YankRing.vim'
+Plugin 'kien/ctrlp.vim'
+Plugin 'jistr/vim-nerdtree-tabs'
+"Plugin 'sudo.vim'
+Plugin 'bronson/vim-trailing-whitespace'
+Plugin 'mbbill/undotree'
+"Plugin 'mhinz/vim-signify'
+Plugin 'Raimondi/delimitMate'
+Plugin 'bling/vim-airline'
+Plugin 'tpope/vim-surround'
+Plugin 'Lokaltog/vim-easymotion'
+if v:version > 703
+    Plugin 'myusuf3/numbers.vim'
+endif
 " General Programming
-Bundle 'scrooloose/syntastic'
-Bundle 'tpope/vim-fugitive'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'godlygeek/tabular'
-Bundle 'majutsushi/tagbar'
+Plugin 'godlygeek/tabular'
+Plugin 'scrooloose/nerdcommenter'
+if executable('ack')
+    Plugin 'mileszs/ack.vim'
+endif
+if v:version > 700
+    Plugin 'scrooloose/syntastic'
+    if executable('ctags')
+        Plugin 'majutsushi/tagbar'
+    endif
+endif
+" Git
+if executable('git')
+    Plugin 'tpope/vim-fugitive'
+    Plugin 'airblade/vim-gitgutter'
+endif
 " Snippets & AutoComplete
-Bundle 'Shougo/neocomplcache.vim'
-Bundle 'Shougo/neosnippet'
-Bundle 'honza/vim-snippets'
+Plugin 'Shougo/neocomplcache.vim'
+Plugin 'Shougo/neosnippet'
+Plugin 'Shougo/neosnippet-snippets'
+Plugin 'scrooloose/snipmate-snippets'
+Plugin 'honza/vim-snippets'
+Plugin 'Indent-Guides'
 " Python
-Bundle 'pythoncomplete'
-" Web
-Bundle 'mattn/emmet-vim'
-if iCanHazVundle == 0
+Plugin 'hynek/vim-python-pep8-indent'
+" Javascript
+Plugin 'leshill/vim-json'
+"Plugin 'groenewege/vim-less'
+Plugin 'taxilian/vim-web-indent'
+" HTML
+Plugin 'mattn/emmet-vim'
+Plugin 'HTML-AutoCloseTag'
+"Plugin 'ChrisYip/Better-CSS-Syntax-for-Vim'
+"Plugin 'tache/vim-mustache-handlebars'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+syntax on
+
+if VundleInstalled == 1
     echo "Installing Bundles, please ignore key map error messages"
     echo ""
-    :BundleInstall
+    :PluginInstall
 endif
 " Setting up Vundle - the vim plugin bundler end
 
 
 " General Settings
-
 set bs=2                " allow backspacing over everything in insert mode
 set history=50          " keep 50 lines of command line history
 set ruler               " show the cursor position all the time
 set autoread            " auto read when file is changed from outside
+syntax on               " syntax highlight
 set hlsearch            " search highlighting
-
-syntax on
-filetype plugin indent on
 
 " auto reload vimrc when editing it
 autocmd! bufwritepost .vimrc source ~/.vimrc
@@ -92,7 +129,7 @@ set copyindent          " copy the previous indentation on autoindenting
 set ignorecase          " ignore case when searching
 set smartcase           " ignore case if search pattern is all lowercase,case-sensitive otherwise
 set smarttab            " insert tabs on the start of a line according to context
-set pastetoggle=<F12>   " pastetoggle (sane indentation on pastes)
+set pastetoggle=<F2>    " pastetoggle (sane indentation on pastes)
 
 " disable sound on errors
 set noerrorbells
@@ -111,6 +148,12 @@ set tm=500
 " status line {
     set laststatus=2
 "}
+
+" mouse settings
+if has("mouse")
+    set mouse=a
+endif
+set mousehide " Hide mouse pointer on insert mode."
 
 "---------------------------------------------------------------------------
 " ENCODING SETTINGS
@@ -203,8 +246,8 @@ cnoremap <C-a>      <Home>
 cnoremap <C-e>      <End>
 cnoremap <C-k>      <C-u>
 
-" ,p toggles paste mode
-nmap <leader>p :set paste!<BAR>set paste?<CR>
+" <F2> toggles paste mode
+nnoremap <F2> :set invpaste paste?<CR>
 
 " allow multiple indentation/deindentation in visual mode
 vnoremap < <gv
@@ -231,8 +274,8 @@ cmap cd. lcd %:p:h
    inoremap <C-u>5 <esc>yypVr^A
 "}
 
-" Enable omni completion. (Ctrl-X Ctrl-O)
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+" remove trailing spaces
+nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<cr>
 
 " use syntax complete if nothing else available
 if has("autocmd") && exists("+omnifunc")
@@ -245,75 +288,205 @@ endif
 "---------------------------------------------------------------------------
 " PLUGIN SETTINGS
 "---------------------------------------------------------------------------
-" --- Airline
+" --- Airline {
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#syntastic#enabled = 1
+"}
 
-" --- Solarized
-"let g:solarized_termcolors=256
-"set background=dark
-"let g:solarized_termtrans=1
-"let g:solarized_contrast="high"
-"let g:solarized_visibility="high"
+" --- NerdTree {
+" Ctrl-F4 to Display the file browser tree
+nmap <F4> :NERDTreeTabsToggle<CR>
+" ,p to show current file in the tree
+nmap <leader>p :NERDTreeFind<CR>
+"}
 
-" --- NerdTree
-map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
-
-" --- EasyMotion
+" --- EasyMotion {
 "let g:EasyMotion_leader_key = '<Leader>m' " default is <Leader>w
 hi link EasyMotionTarget ErrorMsg
 hi link EasyMotionShade  Comment
+"}
 
-" --- TagBar
+" --- Ctrlp {
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc
+
+let g:ctrlp_custom_ignore = {
+    \ 'dir': '\v[\/]\.(git|hg|svn)$',
+    \ 'file': '\v\.(exe|so|dll)$',
+    \ 'link': 'some_bad_symbolic_links',
+    \ }
+
+let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("e")': ['<c-t>'],
+    \ 'AcceptSelection("t")': ['<cr>', '<2-LeftMouse>'],
+    \ }
+
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20,results:25'
+
+" Directories to ignore
+set wildignore+=*/vendor/**
+set wildignore+=*/bower_components/**
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_show_hidden = 1
+let g:ctrlp_follow_symlinks = 1
+"}
+
+" --- Indent-guides {
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 2
+"}
+
+" --- TagBar {
 " toggle TagBar with F7
 nnoremap <silent> <F7> :TagbarToggle<CR>
 " set focus to TagBar when opening it
 let g:tagbar_autofocus = 1
+"}
 
 " --- neocomplcache {
+" Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
-let g:neocomplete#enable_at_startup = 1
-let g:neocomplcache_enable_camel_case_completion = 1
+" Use neocomplcache.
+let g:neocomplcache_enable_at_startup = 1
+" Use smartcase.
 let g:neocomplcache_enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplcache_min_syntax_length = 3
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+
+" Enable heavy features.
+" Use camel case completion.
+let g:neocomplcache_enable_camel_case_completion = 1
+" Use underbar completion.
 let g:neocomplcache_enable_underbar_completion = 1
-let g:neocomplcache_enable_auto_delimiter = 1
-let g:neocomplcache_max_list = 15
-let g:neocomplcache_force_overwrite_completefunc = 1
 
-" SuperTab like snippets behavior.
-imap <expr><TAB> neosnippet#expandable() ?
-    \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
-    \ "\<C-e>" : "\<TAB>")
-smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
+" Define dictionary.
+let g:neocomplcache_dictionary_filetype_lists = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+        \ }
 
-" Plugin key-mappings
+" Define keyword.
+if !exists('g:neocomplcache_keyword_patterns')
+    let g:neocomplcache_keyword_patterns = {}
+endif
+let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplcache#undo_completion()
+inoremap <expr><C-l>     neocomplcache#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return neocomplcache#smart_close_popup() . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y>  neocomplcache#close_popup()
+inoremap <expr><C-e>  neocomplcache#cancel_popup()
+" Close popup by <Space>.
+"inoremap <expr><Space> pumvisible() ? neocomplcache#close_popup() : "\<Space>"
+
+" For cursor moving in insert mode(Not recommended)
+"inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
+"inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
+"inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
+"inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
+" Or set this.
+"let g:neocomplcache_enable_cursor_hold_i = 1
+" Or set this.
+let g:neocomplcache_enable_insert_char_pre = 1
+
+" AutoComplPop like behavior.
+"let g:neocomplcache_enable_auto_select = 1
+
+" Shell like behavior(not recommended).
+"set completeopt+=longest
+"let g:neocomplcache_enable_auto_select = 1
+"let g:neocomplcache_disable_auto_complete = 1
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplcache_force_omni_patterns')
+  let g:neocomplcache_force_omni_patterns = {}
+endif
+let g:neocomplcache_force_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplcache_force_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplcache_force_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+"}
+
+" --- neosnippet {
+" Plugin key-mappings.
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-inoremap <expr><C-g> neocomplcache#undo_completion()
+xmap <C-k>     <Plug>(neosnippet_expand_target)
 
-" <TAB>: completion.
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
-
-" <CR>: close popup
-" <s-CR>: close popup and save indent.
-inoremap <expr><s-CR> pumvisible() ? neocomplcache#close_popup()"\<CR>" : "\<CR>"
-inoremap <expr><CR> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
-
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplcache#close_popup()
-
-" Use honza's snippets.
-let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
-
-" Enable neosnippet snipmate compatibility mode
-let g:neosnippet#enable_snipmate_compatibility = 1
+" SuperTab like snippets behavior.
+imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: "\<TAB>"
 
 " For snippet_complete marker.
 if has('conceal')
-    set conceallevel=2 concealcursor=i
+  set conceallevel=2 concealcursor=i
 endif
+
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
+
+" Tell Neosnippet about the other snippets
+let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
 "}
 
-" --- vim-gitgutter
-let g:gitgutter_enabled = 1
+" --- Numbers {
+nnoremap <F5> :NumbersToggle<CR>
+"}
+
+" --- Syntastic {
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_check_on_open=1
+let g:syntastic_enable_signs=1
+let g:syntastic_auto_jump=1
+let g:syntastic_php_checkers=['php']
+let g:syntastic_json_checkers=['jsonlint', 'jsonval']
+let g:syntastic_twig_checkers=['twiglint']
+let g:syntastic_auto_loc_list=0
+let g:syntastic_enable_highlighting=1
+let g:syntastic_echo_current_error=1
+"}
+
+" --- Undotree {
+nnoremap <F3> :UndotreeToggle<cr>
+"}
+
+" --- Yankring {
+nnoremap <silent> <F8> :YRShow<CR>
+let g:yankring_replace_n_pkey = '<C-n>'
+let g:yankring_replace_n_nkey = '<C-b>'
+let g:yankring_history_dir = $HOME.'/.vim/'
+let g:yankring_history_file = '.yankring_history'
+"}
